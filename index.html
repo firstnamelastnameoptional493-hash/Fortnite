@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#0a0e1a">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/icons/icon-192.svg">
+  <title>Fortnite 3D — PWA Wrapper</title>
+  <style>
+    html,body{height:100%;margin:0;background:#0a0e1a}
+    #frame{position:fixed;inset:0;border:0;width:100%;height:100vh}
+    #offline{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-family:system-ui,Segoe UI,Arial;background:#071026;z-index:10}
+  </style>
+</head>
+<body>
+  <iframe id="frame" src="/Fortnite" title="Fortnite 3D" allowfullscreen sandbox="allow-same-origin allow-scripts allow-modals"></iframe>
+  <div id="offline" style="display:none">You are offline — please reconnect.</div>
+
+  <script>
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => {
+          console.log('SW registered', reg);
+        }).catch(err => console.warn('SW failed', err));
+      });
+    }
+
+    // Simple offline detection -> show message
+    function updateOnlineStatus() {
+      const offline = document.getElementById('offline');
+      if (navigator.onLine) offline.style.display = 'none'; else offline.style.display = 'flex';
+    }
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+    updateOnlineStatus();
+  </script>
+</body>
+</html>
